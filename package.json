@@ -2,8 +2,9 @@
   "name": "mfee07-nodejs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
+    "babel": "nodemon --exec babel-node src/http_server3.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/kiringithub/mfee07-nodejs/issues"
   },
-  "homepage": "https://github.com/kiringithub/mfee07-nodejs#readme"
+  "homepage": "https://github.com/kiringithub/mfee07-nodejs#readme",
+  "dependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.6",
+    "express": "^4.17.1"
+  }
 }
