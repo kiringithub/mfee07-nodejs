@@ -2,14 +2,33 @@ const express = require('express');
 
 const app = express();
 
+app.set('view engine', 'ejs');
 
 app.get('/', (req, res)=>{
-    res.send('test ok !!!!!!!!!!!!!');
+    res.render('main', {name: 'Vic'});
 });
 
-app.get('/a.html', (req, res)=>{
-    res.send('/a.html from router');
+// 只有路由要給斜線
+app.get('/sales-json', (req, res)=>{
+    const sales = require(__dirname + '/../data/sales.json');  // .json可省略
+    // 輸出成json檔
+    // res.json(data);
+    // res.json(data[1]);
+    // 下面的sales-json是template不需要加斜線
+    res.render('sales-json', { sales })
 });
+
+app.get('/pending', (req, res)=>{
+
+});
+
+app.get('/ok', (req, res)=>{
+    res.send('ok');
+});
+
+// app.get('/a.html', (req, res)=>{
+//     res.send('/a.html from router');
+// });
 
 // 上面有/a.html路由就不會進到public的a.html
 app.use(express.static('public'));
