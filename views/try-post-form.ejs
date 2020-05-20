@@ -1,0 +1,63 @@
+<%- include('parts/html-head') %>
+
+<%- include('parts/navbar') %>
+
+<div class="container">
+    <form method="post">
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="text" class="form-control" id="email" name="email">
+            <!-- 判斷方法一 -->
+            <% if(typeof email!=='undefined'){ %>
+            <small>上次輸入的: <%= email %></small>
+            <% } %>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+            <!-- 判斷方法二 -->
+            <% if(!! locals.password){ %>
+            <small>上次輸入的: <%= password %></small>
+            <% } %>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div id="info"></div>
+    <button onclick="doAjax()">ajax send</button>
+</div>
+<%- include('parts/scripts') %>
+<script>
+    function doAjax(){
+        // 法一
+        // $.post('/try-json-post', $('form').serialize(), function(data){
+        //     info.innerHTML = data;
+        // }, 'text');  //告訴它是'json'則會自動把data轉換成obhect，也可以告訴它是'text'。
+
+        // 法二，用fetch
+        const data = {
+            email: $('#email').val(),   // 抓id為email的value
+            password: password.value,   // 抓id為password的value
+        }
+        // 下面是發送的部分
+        fetch('/try-json-post', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(r=>r.text())  // 回傳的部分，是回傳一個promise的物件，所以下面還有一個.then
+        .then(txt=>{  // 這個.then才是真的拿到的部分
+            info.innerHTML = txt;
+        })
+
+        // 上面的r.text會自動return，如果加{}就不會自動return，
+        // 要改成以下寫法:
+        // .then(r=>{
+        //     return r.text()
+        // })
+
+    }
+
+</script>
+<%- include('parts/html-foot') %>
