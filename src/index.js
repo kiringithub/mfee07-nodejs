@@ -1,4 +1,9 @@
-const express = require('express');
+const express = require('express');           //
+// const multer = require('multer');             // 處理檔案上傳的套件
+const fs = require('fs');                     // 處理檔案的核心套件
+// const upload = multer({dest:'tmp_uploads/'}); // 設定上傳暫存目錄
+// 把自建的upload.js引進來
+const upload = require(__dirname + '/upload-module'); // 設定上傳暫存目錄
 
 const app = express();
 
@@ -77,6 +82,72 @@ app.get('/pending', (req, res)=>{
 app.get('/ok', (req, res)=>{
     res.send('ok');
 });
+
+
+
+// 檔案上傳，單一檔案用file，多檔案用files，files還有分!!
+// 副檔名可以查 mime type mdn
+app.get('/try-upload', (req, res)=>{
+    res.render('try-upload')
+});
+// 用另一種方法傳檔，先把/try-upload註解掉
+// app.post('/try-upload', upload.single('avatar'),(req, res)=>{
+//     console.log(req.file);
+//     console.log(req.body);
+//     const output = {
+//         success: false,
+//         uploadedImg: '',
+//         nickname: '',
+//         errorMsg: ''
+//     }
+//     output.nickname = req.body.nickname || '';
+//     if(req.file && req.file.originalname){
+//         // 判斷是否為圖檔
+//         // 下面的寫法，不管是png還是jpeg都會進入fs.rename
+//         switch(req.file.mimetype){
+//             case 'image/png':
+//             case 'image/jpeg':
+//                 // 將檔案搬至公開的資料夾
+//                 fs.rename(req.file.path, './public/img/'+ req.file.originalname, error=>{
+//                     if(!error){
+//                         output.success = true;
+//                         output.uploadedImg = '/img/' + req.file.originalname;
+//                     }
+//                     res.render('try-upload', output);
+//                 })
+//                 break;
+//             default:
+//                 fs.unlink(req.file.path, error=>{
+//                     output.errorMsg = '檔案類型錯誤'
+//                     res.render('try-upload', output);
+//                 })  // 刪除暫存檔
+//         }
+//     }
+//     // 上面使用render，send就要拿掉。
+//     // res.send('ok')
+// });
+
+app.post('/try-upload2', upload.single('avatar'), (req, res)=>{
+    res.json({
+        filename: req.file.filename,
+        body: req.body
+    });
+    
+    // console.log(req.file)
+    // res.send('ok')
+})
+app.get('/my-params1/:action?/:id?', (req, res)=>{
+    res.json(req.params)
+})
+
+// 從網址路由取出並處理資料
+app.get(/^\/mobile\/09\d{2}-?\d{3}-?\d{3}$/, (req, res)=>{
+    let url = req.url.slice(8).split('?')[0];
+    url = url.split('-').join('');
+
+    res.send('Mobile: ' + url)
+})
+
 
 // app.get('/a.html', (req, res)=>{
 //     res.send('/a.html from router');
